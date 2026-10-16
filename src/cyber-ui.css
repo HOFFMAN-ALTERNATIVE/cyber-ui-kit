@@ -1,0 +1,112 @@
+/*! cyber-ui-kit — MIT — cyberpunk / HUD components in plain CSS */
+:root {
+  --cui-bg: #02040a;
+  --cui-fg: #c8f6ff;
+  --cui-edge: #33aaff;
+  --cui-glitch: #00ffff;
+  --cui-accent: #ff00ff;
+  --cui-ok: #33ff88;
+  --cui-warn: #ffcc33;
+  --cui-danger: #ff3355;
+  --cui-font: "Share Tech Mono", "Courier New", monospace;
+  --cui-display: "Orbitron", "Share Tech Mono", sans-serif;
+  --cui-radius: 2px;
+}
+
+.cui { background: var(--cui-bg); color: var(--cui-fg); font-family: var(--cui-font); }
+
+/* ---------- Scanlines + vignette overlay ---------- */
+.cui-scanlines { position: relative; isolation: isolate; }
+.cui-scanlines::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 50;
+  background:
+    repeating-linear-gradient(to bottom, rgb(255 255 255 / 0.04) 0 1px, transparent 1px 3px),
+    radial-gradient(ellipse at center, transparent 55%, rgb(0 0 0 / 0.55) 100%);
+  mix-blend-mode: overlay;
+  animation: cui-flicker 6s infinite steps(60);
+}
+@keyframes cui-flicker { 0%, 100% { opacity: 1 } 47% { opacity: .92 } 48% { opacity: 1 } 83% { opacity: .96 } }
+
+/* ---------- Glitch title ---------- */
+.cui-glitch {
+  position: relative; display: inline-block; font-family: var(--cui-display);
+  font-weight: 900; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--cui-fg); text-shadow: 0 0 12px rgb(0 255 255 / .45);
+}
+.cui-glitch::before, .cui-glitch::after {
+  content: attr(data-text); position: absolute; inset: 0; overflow: hidden;
+}
+.cui-glitch::before { color: var(--cui-glitch); transform: translate(-2px, 0); clip-path: inset(0 0 55% 0); animation: cui-glitch-a 2.6s infinite linear alternate-reverse; }
+.cui-glitch::after  { color: var(--cui-accent); transform: translate(2px, 0);  clip-path: inset(55% 0 0 0); animation: cui-glitch-b 1.9s infinite linear alternate-reverse; }
+.cui-glitch.is-burst::before, .cui-glitch.is-burst::after { animation-duration: .18s; }
+@keyframes cui-glitch-a { 0% { clip-path: inset(10% 0 80% 0) } 20% { clip-path: inset(60% 0 5% 0) } 40% { clip-path: inset(30% 0 45% 0) } 60% { clip-path: inset(85% 0 2% 0) } 80% { clip-path: inset(5% 0 70% 0) } 100% { clip-path: inset(45% 0 30% 0) } }
+@keyframes cui-glitch-b { 0% { clip-path: inset(70% 0 10% 0) } 25% { clip-path: inset(15% 0 60% 0) } 50% { clip-path: inset(50% 0 25% 0) } 75% { clip-path: inset(0 0 85% 0) } 100% { clip-path: inset(80% 0 5% 0) } }
+
+/* ---------- HUD panel ---------- */
+.cui-panel {
+  --c: var(--cui-edge);
+  position: relative; padding: 1.1rem 1.25rem; border: 1px solid color-mix(in srgb, var(--c) 45%, transparent);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--c) 10%, transparent), transparent 60%), rgb(2 8 20 / .72);
+  backdrop-filter: blur(4px);
+  clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px));
+  box-shadow: inset 0 0 24px color-mix(in srgb, var(--c) 18%, transparent);
+}
+.cui-panel::before, .cui-panel::after {
+  content: ""; position: absolute; width: 18px; height: 18px; border: 2px solid var(--c); pointer-events: none;
+}
+.cui-panel::before { top: 4px; left: 4px; border-right: 0; border-bottom: 0; }
+.cui-panel::after  { bottom: 4px; right: 4px; border-left: 0; border-top: 0; }
+.cui-panel__title {
+  margin: 0 0 .6rem; font: 700 .72rem/1 var(--cui-display); letter-spacing: .25em;
+  text-transform: uppercase; color: var(--c);
+}
+.cui-panel--accent { --c: var(--cui-accent); }
+.cui-panel--ok { --c: var(--cui-ok); }
+.cui-panel--danger { --c: var(--cui-danger); }
+
+/* ---------- Meter / status ---------- */
+.cui-meter { height: 6px; background: rgb(255 255 255 / .07); overflow: hidden; }
+.cui-meter > i { display: block; height: 100%; width: calc(var(--v, 0) * 1%); background: linear-gradient(90deg, var(--cui-edge), var(--cui-glitch)); box-shadow: 0 0 10px var(--cui-glitch); transition: width .6s ease; }
+.cui-dot { display: inline-block; width: .55em; height: .55em; border-radius: 50%; background: var(--cui-ok); box-shadow: 0 0 8px currentColor; color: var(--cui-ok); animation: cui-pulse 1.6s infinite; }
+.cui-dot--warn { background: var(--cui-warn); color: var(--cui-warn); }
+.cui-dot--danger { background: var(--cui-danger); color: var(--cui-danger); }
+@keyframes cui-pulse { 50% { opacity: .35 } }
+
+/* ---------- Button ---------- */
+.cui-btn {
+  font: 700 .8rem/1 var(--cui-display); letter-spacing: .18em; text-transform: uppercase;
+  color: var(--cui-glitch); background: transparent; padding: .8rem 1.4rem; cursor: pointer;
+  border: 1px solid var(--cui-glitch); clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+  transition: background .2s, color .2s, box-shadow .2s;
+}
+.cui-btn:hover, .cui-btn:focus-visible { background: var(--cui-glitch); color: var(--cui-bg); box-shadow: 0 0 24px var(--cui-glitch); outline: none; }
+
+/* ---------- Terminal typing ---------- */
+.cui-terminal { font-family: var(--cui-font); color: var(--cui-ok); white-space: pre-wrap; min-height: 6em; }
+.cui-terminal .cui-caret { display: inline-block; width: .6em; height: 1em; vertical-align: -0.12em; background: currentColor; animation: cui-blink 1s steps(1) infinite; }
+@keyframes cui-blink { 50% { opacity: 0 } }
+
+/* ---------- Nixie countdown ---------- */
+.cui-nixie { display: inline-flex; gap: .2rem; align-items: center; font-family: var(--cui-display); }
+.cui-nixie__digit {
+  min-width: 1.05em; padding: .15em .05em; text-align: center; font-size: clamp(1.2rem, 2.5vw, 1.85rem); line-height: 1;
+  color: #ffb347; text-shadow: 0 0 6px #ff7a00, 0 0 18px #ff5a00, 0 0 34px rgb(255 90 0 / .6);
+  background: radial-gradient(ellipse at 50% 40%, rgb(255 120 0 / .14), transparent 70%), linear-gradient(#0b0703, #050302);
+  border: 1px solid rgb(255 140 40 / .25); border-radius: .4em .4em .2em .2em;
+}
+.cui-nixie__sep { font-size: clamp(1rem, 2vw, 1.5rem); color: #ff7a00; animation: cui-blink 1s steps(1) infinite; }
+
+/* ---------- CRT power-off ---------- */
+.cui-crt-off { animation: cui-crt-off .55s cubic-bezier(.23, 1, .32, 1) forwards; transform-origin: center; }
+@keyframes cui-crt-off {
+  0%   { transform: scale(1, 1); filter: brightness(1); opacity: 1 }
+  40%  { transform: scale(1, .006); filter: brightness(3) }
+  70%  { transform: scale(.25, .004); filter: brightness(6) }
+  100% { transform: scale(0, 0); filter: brightness(10); opacity: 0 }
+}
+.cui-crt-on { animation: cui-crt-off .5s cubic-bezier(.23, 1, .32, 1) reverse both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .cui-glitch::before, .cui-glitch::after, .cui-scanlines::after, .cui-dot, .cui-caret, .cui-nixie__sep { animation: none !important; }
+  .cui-crt-off, .cui-crt-on { animation-duration: .01s !important; }
+}

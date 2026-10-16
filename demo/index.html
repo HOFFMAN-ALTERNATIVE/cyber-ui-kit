@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>cyber-ui-kit — cyberpunk / HUD components</title>
+  <meta name="description" content="Dependency-free cyberpunk and HUD UI components: glitch title, CRT power-off, nixie countdown, HUD panels, scanlines, terminal typing." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@700;900&display=swap" />
+  <link rel="stylesheet" href="../src/cyber-ui.css" />
+  <link rel="stylesheet" href="./demo.css" />
+</head>
+<body class="cui cui-scanlines">
+  <main id="screen">
+    <header class="hero">
+      <p class="eyebrow"><span class="cui-dot"></span> SYSTEM ONLINE · <span data-cui="clock"></span></p>
+      <h1 data-cui="glitch">CYBER UI KIT</h1>
+      <p class="lead">Cyberpunk &amp; HUD components in plain CSS and ~3&nbsp;KB of dependency-free JavaScript.</p>
+      <div class="actions">
+        <a class="cui-btn" href="https://github.com/HOFFMAN-ALTERNATIVE/cyber-ui-kit">View on GitHub</a>
+        <button class="cui-btn" id="power" type="button">CRT power-off</button>
+      </div>
+    </header>
+
+    <section class="grid">
+      <article class="cui-panel">
+        <h2 class="cui-panel__title">Terminal</h2>
+        <div id="term"></div>
+      </article>
+
+      <article class="cui-panel cui-panel--accent">
+        <h2 class="cui-panel__title">Nixie countdown</h2>
+        <div id="nixie"></div>
+        <p class="hint">Restarts at zero.</p>
+      </article>
+
+      <article class="cui-panel cui-panel--ok">
+        <h2 class="cui-panel__title">Telemetry</h2>
+        <ul class="stats">
+          <li>CPU <span class="cui-meter" id="m-cpu"><i></i></span></li>
+          <li>MEM <span class="cui-meter" id="m-mem"><i></i></span></li>
+          <li>NET <span class="cui-meter" id="m-net"><i></i></span></li>
+        </ul>
+        <p class="status"><span class="cui-dot"></span> core &nbsp; <span class="cui-dot cui-dot--warn"></span> cache &nbsp; <span class="cui-dot cui-dot--danger"></span> uplink</p>
+      </article>
+
+      <article class="cui-panel">
+        <h2 class="cui-panel__title">Usage</h2>
+<pre class="code">&lt;link rel="stylesheet" href="cyber-ui.css"&gt;
+&lt;h1 data-cui="glitch"&gt;HELLO&lt;/h1&gt;
+&lt;script type="module"&gt;
+  import { autoInit } from "./cyber-ui.js";
+  autoInit();
+&lt;/script&gt;</pre>
+      </article>
+    </section>
+    <footer>MIT · <a href="https://github.com/HOFFMAN-ALTERNATIVE">Hoffman Alternative</a></footer>
+  </main>
+  <script type="module" src="./main.js"></script>
+</body>
+</html>

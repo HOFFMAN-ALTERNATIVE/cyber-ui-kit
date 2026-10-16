@@ -1,0 +1,17 @@
+* { box-sizing: border-box; }
+html, body { margin: 0; min-height: 100%; }
+body { background: radial-gradient(ellipse at top, #071a2e 0%, var(--cui-bg) 60%); min-height: 100vh; }
+main { max-width: 1100px; margin: 0 auto; padding: 4rem 1.25rem 2rem; }
+a { color: var(--cui-glitch); }
+.hero { text-align: center; margin-bottom: 3rem; }
+.eyebrow { letter-spacing: .3em; font-size: .75rem; color: var(--cui-edge); }
+h1 { font-size: clamp(2.4rem, 9vw, 5.5rem); margin: .4em 0; }
+.lead { max-width: 40ch; margin: 0 auto 2rem; opacity: .85; }
+.actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+.actions a { text-decoration: none; }
+.grid { display: grid; gap: 1.5rem; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+.stats { list-style: none; padding: 0; margin: 0; display: grid; gap: .8rem; }
+.stats li { display: grid; grid-template-columns: 3.5em 1fr; align-items: center; }
+.status, .hint { font-size: .8rem; opacity: .8; margin-top: 1rem; }
+.code { margin: 0; font-size: .78rem; color: var(--cui-fg); overflow-x: auto; }
+footer { text-align: center; margin-top: 3rem; font-size: .8rem; opacity: .6; }

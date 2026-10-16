@@ -1,0 +1,25 @@
+{
+  "name": "cyber-ui-kit",
+  "version": "1.0.0",
+  "description": "Cyberpunk / HUD UI components in plain CSS + dependency-free JS",
+  "type": "module",
+  "license": "MIT",
+  "main": "src/cyber-ui.js",
+  "exports": { ".": "./src/cyber-ui.js", "./css": "./src/cyber-ui.css" },
+  "files": ["src"],
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "lint": "eslint src tests"
+  },
+  "devDependencies": {
+    "eslint": "^9.12.0",
+    "@eslint/js": "^9.12.0",
+    "globals": "^15.11.0",
+    "jsdom": "^25.0.1",
+    "vite": "^5.4.8",
+    "vitest": "^2.1.2"
+  }
+}
