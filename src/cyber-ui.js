@@ -53,15 +53,21 @@ export function splitDuration(ms) {
 /** Render a nixie-tube countdown (HH:MM:SS) into el. Returns stop(). */
 export function nixieCountdown(el, target, { onDone, now = () => Date.now() } = {}) {
   const end = target instanceof Date ? target.getTime() : Number(target);
+  if (!Number.isFinite(end)) throw new TypeError("nixieCountdown: target must be a Date or epoch milliseconds");
   el.classList.add("cui-nixie");
   el.setAttribute("role", "timer");
+  const span = (cls, text) => Object.assign(document.createElement("span"), { className: cls, textContent: text });
   const render = () => {
-    const { hh, mm, ss, done } = splitDuration(end - now());
-    const html = [hh, mm, ss]
-      .map((g) => [...g].map((d) => `<span class="cui-nixie__digit">${d}</span>`).join(""))
-      .join('<span class="cui-nixie__sep">:</span>');
-    el.innerHTML = html;
-    el.setAttribute("aria-label", `${hh}:${mm}:${ss} remaining`);
+    const { days, hh, mm, ss, done } = splitDuration(end - now());
+    // Hours keep counting past 24 instead of silently wrapping to 00.
+    const hours = String(days * 24 + Number(hh)).padStart(2, "0");
+    const nodes = [];
+    [hours, mm, ss].forEach((g, i) => {
+      if (i) nodes.push(span("cui-nixie__sep", ":"));
+      for (const d of g) nodes.push(span("cui-nixie__digit", d));
+    });
+    el.replaceChildren(...nodes);
+    el.setAttribute("aria-label", `${hours}:${mm}:${ss} remaining`);
     if (done) { clearInterval(id); onDone?.(); }
   };
   const id = setInterval(render, 1000);
@@ -98,13 +104,22 @@ export function setMeter(el, value) {
   return v;
 }
 
-/** Auto-init: [data-cui="glitch|clock|countdown|typewriter|meter"]. */
+/**
+ * Auto-init: [data-cui="glitch|clock|countdown|typewriter|meter"].
+ * Idempotent: elements already initialised are skipped, so calling it again
+ * after inserting new markup does not stack timers on existing elements.
+ */
 export function autoInit(root = document) {
-  root.querySelectorAll("[data-cui]").forEach((el) => {
+  root.querySelectorAll("[data-cui]:not([data-cui-ready])").forEach((el) => {
+    el.dataset.cuiReady = "";
     switch (el.dataset.cui) {
       case "glitch": glitch(el); break;
       case "clock": hudClock(el); break;
-      case "countdown": nixieCountdown(el, Date.now() + Number(el.dataset.seconds || 60) * 1000); break;
+      case "countdown": {
+        const s = Number(el.dataset.seconds);
+        nixieCountdown(el, Date.now() + (Number.isFinite(s) && s >= 0 ? s : 60) * 1000);
+        break;
+      }
       case "typewriter": typewriter(el, (el.dataset.lines || el.textContent).split("|")); break;
       case "meter": setMeter(el, el.dataset.value); break;
     }

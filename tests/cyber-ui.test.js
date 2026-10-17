@@ -82,3 +82,27 @@ describe("autoInit", () => {
     expect(document.querySelector(".cui-meter").style.getPropertyValue("--v")).toBe("42");
   });
 });
+
+describe("hardening", () => {
+  it("nixie keeps counting hours past 24 and never uses innerHTML markup from input", () => {
+    vi.useFakeTimers();
+    const el = document.createElement("div");
+    const stop = nixieCountdown(el, 0, { now: () => -(26 * 3600 + 5) * 1000 });
+    expect(el.getAttribute("aria-label")).toBe("26:00:05 remaining");
+    expect(el.querySelectorAll(".cui-nixie__digit")).toHaveLength(6);
+    stop();
+  });
+  it("nixie rejects an invalid target", () => {
+    expect(() => nixieCountdown(document.createElement("div"), "soon")).toThrow(TypeError);
+  });
+  it("autoInit is idempotent and falls back on bad data-seconds", () => {
+    vi.useFakeTimers();
+    document.body.innerHTML = '<div data-cui="countdown" data-seconds="abc"></div>';
+    const spy = vi.spyOn(globalThis, "setInterval");
+    autoInit();
+    autoInit();
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(document.querySelector("[data-cui]").getAttribute("aria-label")).toBe("00:01:00 remaining");
+    spy.mockRestore();
+  });
+});
